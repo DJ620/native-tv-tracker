@@ -8,8 +8,9 @@ import {
   Image,
   useWindowDimensions,
   ScrollView,
+  FlatList,
 } from "react-native";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef, Suspense } from "react";
 import Header from "../components/Header";
 import { useLocalSearchParams } from "expo-router";
 import tvMazeApi from "../utils/tvMazeApi";
@@ -25,6 +26,7 @@ import Episode from "../components/Episode";
 const show = () => {
   const params = useLocalSearchParams();
   const { width } = useWindowDimensions();
+  const flatListRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [showLibrary, setShowLibrary] = useState([]);
   const [showInfo, setShowInfo] = useState({});
@@ -43,6 +45,7 @@ const show = () => {
   const [mainImage, setMainImage] = useState(null);
   const [network, setNetwork] = useState("");
   const [genres, setGenres] = useState("");
+  const [scrollIndex, setScrollIndex] = useState(1);
 
   useEffect(() => {
     getShowInfo(params.showId);
@@ -75,6 +78,7 @@ const show = () => {
         });
         ep.watched = epInfo?.watched;
         ep.airTime = epInfo?.airTime;
+        ep.inLibrary = true;
       });
       setEpisodeWithImages(allEpisodeData);
     }
@@ -82,6 +86,7 @@ const show = () => {
 
   useEffect(() => {
     if (episodeWithImages.length > 0) {
+      // flatListRef.current.scrollToIndex(2)
       let groupedSeasons = {};
       episodeWithImages.forEach((ep) => {
         groupedSeasons[ep.season]
@@ -119,6 +124,7 @@ const show = () => {
 
   const getShowInfo = async (showId) => {
     setLoading(true);
+    setEpisodeWithImages([]);
     try {
       const response = await tvMazeApi.getShowInfo(showId);
       setShowInfo(response.data);
@@ -146,8 +152,16 @@ const show = () => {
           airTime: `${ep.airdate}T${epTime}`,
           watched: false,
           image: ep.image,
+          inLibrary: false,
         };
       });
+      let groupedSeasons = {};
+      episodes.forEach((ep) => {
+        groupedSeasons[ep.season]
+          ? groupedSeasons[ep.season].push(ep)
+          : (groupedSeasons[ep.season] = [ep]);
+      });
+      setShowSeasons(groupedSeasons);
       setEpisodesData(allEpisodes);
     } catch (error) {
       Alert.alert("Error getting show info", error);
@@ -179,6 +193,14 @@ const show = () => {
       });
     }
     setHandlingLibrary(false);
+  };
+
+  const getItemLayout = (_, index) => {
+    return {
+      length: 350,
+      offset: 370 * (index - 1),
+      index,
+    };
   };
 
   return (
@@ -213,26 +235,41 @@ const show = () => {
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ flexGrow: 1, paddingBottom: 120 }}
           >
-            <Image
-              style={{
-                resizeMode: "center",
-                height: 200,
-                width: "100%",
-                marginTop: 10,
+            <Suspense fallback={<Text>Loading image...</Text>}>
+              <Image
+                style={{
+                  resizeMode: "contain",
+                  height: 200,
+                  width: "100%",
+                  marginTop: 10,
+                }}
+                source={{
+                  uri: mainImage,
+                }}
+              />
+            </Suspense>
+            {/* <ScrollView
+              horizontal={true}
+              showsHorizontalScrollIndicator={false}
+              style={{ marginVertical: 20 }}
+              contentContainerStyle={{ paddingHorizontal: 10 }}
+              decelerationRate={"fast"}
+              snapToInterval={310}
+              snapToAlignment={"center"}
+              ref={(ref) => {
+                setScroller(ref);
               }}
-              source={{
-                uri: mainImage,
-              }}
-            />
-            <View style={{paddingHorizontal:20}}>
-              <ScrollView
-                horizontal={true}
-                showsHorizontalScrollIndicator={false}
-                style={{ marginVertical: 20 }}
-              >
-                <View style={{ flexDirection: "row", gap: 10 }}>
-                  {episodeWithImages?.map((episode, index) => {
-                    return (
+            >
+              <View style={{ flexDirection: "row", gap: 10 }}>
+                {episodeWithImages?.map((episode, index) => {
+                  return (
+                    <View
+                      onLayout={(event) => {
+                        const layout = event.nativeEvent.layout;
+                        // coordinate[item.key] = layout.x;
+                        console.log(layout.x);
+                      }}
+                    >
                       <Episode
                         key={index}
                         episode={episode}
@@ -242,10 +279,40 @@ const show = () => {
                         loading={handlingLibrary}
                         setLoading={setHandlingLibrary}
                       />
-                    );
-                  })}
-                </View>
-              </ScrollView>
+                    </View>
+                  );
+                })}
+              </View>
+            </ScrollView> */}
+            <FlatList
+              ref={flatListRef}
+              getItemLayout={getItemLayout}
+              // initialScrollIndex={2}
+              keyExtractor={(item) => item.id}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{ marginVertical: 20 }}
+              contentContainerStyle={{ paddingHorizontal: 20, gap: 10 }}
+              decelerationRate={"fast"}
+              snapToInterval={350}
+              snapToAlignment={"start"}
+              data={episodeWithImages}
+              renderItem={({ item, index }) => {
+                console.log(episodeWithImages.length)
+                return (
+                  <Episode
+                    index={index}
+                    episode={item}
+                    showInfo={showInfo}
+                    showLibrary={showLibrary}
+                    setShowLibrary={setShowLibrary}
+                    loading={handlingLibrary}
+                    setLoading={setHandlingLibrary}
+                  />
+                );
+              }}
+            />
+            <View style={{ paddingHorizontal: 20 }}>
               {showInfo && (
                 <RenderHtml
                   contentWidth={width}
@@ -277,16 +344,18 @@ const show = () => {
                   {showInfo?.rating?.average}/10
                 </Text>
               </View>
-              {showCast.length > 0 && (
-                <View
-                  style={{
-                    marginBottom: 20,
-                  }}
-                >
-                  <Text style={{ fontSize: 16, paddingLeft: 10 }}>Cast</Text>
-                  <Cast showCast={showCast} />
-                </View>
-              )}
+            </View>
+            {showCast.length > 0 && (
+              <View
+                style={{
+                  marginBottom: 20,
+                }}
+              >
+                <Text style={{ fontSize: 16, paddingLeft: 10 }}>Cast</Text>
+                <Cast showCast={showCast} />
+              </View>
+            )}
+            <View style={{ paddingHorizontal: 20 }}>
               {Object.keys(showSeasons).map((season, index) => {
                 return (
                   <View key={index}>

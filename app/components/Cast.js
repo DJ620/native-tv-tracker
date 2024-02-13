@@ -11,14 +11,14 @@ import { Suspense } from "react";
 const Cast = ({ showCast }) => {
   return (
     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-      <TouchableOpacity activeOpacity={0.99} style={{ flexDirection: "row" }}>
+      <TouchableOpacity activeOpacity={0.99} style={{ flexDirection: "row", gap:1 }}>
         {showCast?.map((cast, index) => {
           return (
             <View
               key={index}
               style={{
-                width: "auto",
-                paddingHorizontal: 10,
+                width: 105,
+                paddingHorizontal: 5,
                 alignItems: "center",
               }}
             >
@@ -26,7 +26,7 @@ const Cast = ({ showCast }) => {
                 <Image
                   style={{
                     resizeMode: "contain",
-                    height: 100,
+                    height: 140,
                     width: 100,
                     marginTop: 10,
                   }}
@@ -38,8 +38,8 @@ const Cast = ({ showCast }) => {
                   }}
                 />
               </Suspense>
-              <Text>{cast.person.name}</Text>
-              <Text style={{ fontStyle: "italic" }}>{cast.character.name}</Text>
+              <Text numberOfLines={1}>{cast.person.name}</Text>
+              <Text numberOfLines={1} style={{ fontStyle: "italic" }}>{cast.character.name}</Text>
             </View>
           );
         })}

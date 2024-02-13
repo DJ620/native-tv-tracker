@@ -135,8 +135,8 @@ const Episode = ({
   const getEpisodeInfo = async () => {
     setInfoLoading(true);
     const res = await tvMazeApi.getGuestCast(episode.id);
-      setGuestCast(res.data);
-      setInfoLoading(false);
+    setGuestCast(res.data);
+    setInfoLoading(false);
   };
 
   return (
@@ -243,11 +243,11 @@ const Episode = ({
           gap: 10,
           backgroundColor: "#dfdfdf",
           paddingRight: 10,
-          width: 300,
+          width: 340,
           height: 75,
           justifyContent: "space-between",
-          borderWidth:.5,
-          borderColor:"gray"
+          borderWidth: 0.5,
+          borderColor: "gray",
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
@@ -258,7 +258,7 @@ const Episode = ({
               width: 75,
             }}
             source={
-              episode.image
+              episode.image?.medium
                 ? {
                     uri: episode.image.medium,
                   }
@@ -269,7 +269,9 @@ const Episode = ({
             <Text style={{ fontSize: 20 }}>
               S{episode.season}|E{episode.number}
             </Text>
-            <Text numberOfLines={2} style={{ fontSize: 16 }}>{episode.name}</Text>
+            <Text numberOfLines={2} style={{ fontSize: 16 }}>
+              {episode.name}
+            </Text>
           </View>
         </View>
         <Pressable

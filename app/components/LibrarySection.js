@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View, Pressable, Image } from "react-native";
+import { StyleSheet, Text, View, Pressable, Image, useWindowDimensions } from "react-native";
 import { useState } from "react";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 
 const LibrarySection = ({ episodes, title }) => {
+  const { width } = useWindowDimensions();
   const router = useRouter();
   const [show, setShow] = useState(true);
   return (
@@ -50,9 +51,9 @@ const LibrarySection = ({ episodes, title }) => {
               >
                 <Image
                   style={{
-                    resizeMode: "cover",
+                    resizeMode: "contain",
                     height: 175,
-                    width: 125
+                    width: width * .29
                   }}
                   source={{
                     uri: show.image,
