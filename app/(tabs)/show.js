@@ -8,9 +8,8 @@ import {
   Image,
   useWindowDimensions,
   ScrollView,
-  FlatList,
 } from "react-native";
-import { useEffect, useState, useRef, Suspense } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Header from "../components/Header";
 import { useLocalSearchParams } from "expo-router";
 import tvMazeApi from "../utils/tvMazeApi";
@@ -20,13 +19,11 @@ import RenderHtml from "react-native-render-html";
 import Season from "../components/Season";
 import Cast from "../components/Cast";
 import { StarRatingDisplay } from "react-native-star-rating-widget";
-import { AntDesign } from "@expo/vector-icons";
-import Episode from "../components/Episode";
+import ScrollEpisodes from "../components/ScrollEpisodes";
 
 const show = () => {
   const params = useLocalSearchParams();
   const { width } = useWindowDimensions();
-  const flatListRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [showLibrary, setShowLibrary] = useState([]);
   const [showInfo, setShowInfo] = useState({});
@@ -45,7 +42,6 @@ const show = () => {
   const [mainImage, setMainImage] = useState(null);
   const [network, setNetwork] = useState("");
   const [genres, setGenres] = useState("");
-  const [scrollIndex, setScrollIndex] = useState(1);
 
   useEffect(() => {
     getShowInfo(params.showId);
@@ -86,7 +82,6 @@ const show = () => {
 
   useEffect(() => {
     if (episodeWithImages.length > 0) {
-      // flatListRef.current.scrollToIndex(2)
       let groupedSeasons = {};
       episodeWithImages.forEach((ep) => {
         groupedSeasons[ep.season]
@@ -125,6 +120,9 @@ const show = () => {
   const getShowInfo = async (showId) => {
     setLoading(true);
     setEpisodeWithImages([]);
+    setMainImage("");
+    setNetwork("");
+
     try {
       const response = await tvMazeApi.getShowInfo(showId);
       setShowInfo(response.data);
@@ -195,14 +193,6 @@ const show = () => {
     setHandlingLibrary(false);
   };
 
-  const getItemLayout = (_, index) => {
-    return {
-      length: 350,
-      offset: 370 * (index - 1),
-      index,
-    };
-  };
-
   return (
     <View style={{ backgroundColor: "white", flex: 1 }}>
       <Header />
@@ -217,7 +207,13 @@ const show = () => {
               paddingHorizontal: 20,
             }}
           >
-            <Text style={{ fontSize: 30 }}>{showInfo?.name}</Text>
+            <Text
+              adjustsFontSizeToFit={true}
+              numberOfLines={2}
+              style={{ fontSize: 30, maxWidth: "65%" }}
+            >
+              {showInfo?.name}
+            </Text>
             <Pressable
               onPress={() => handleShowLibrary()}
               style={{
@@ -233,7 +229,7 @@ const show = () => {
           </View>
           <ScrollView
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ flexGrow: 1, paddingBottom: 120 }}
+            contentContainerStyle={{ flexGrow: 1, paddingBottom: 150 }}
           >
             <Suspense fallback={<Text>Loading image...</Text>}>
               <Image
@@ -243,9 +239,13 @@ const show = () => {
                   width: "100%",
                   marginTop: 10,
                 }}
-                source={{
-                  uri: mainImage,
-                }}
+                source={
+                  mainImage
+                    ? {
+                        uri: mainImage,
+                      }
+                    : require("../assets/images/colorcard.jpeg")
+                }
               />
             </Suspense>
             {/* <ScrollView
@@ -284,66 +284,48 @@ const show = () => {
                 })}
               </View>
             </ScrollView> */}
-            <FlatList
-              ref={flatListRef}
-              getItemLayout={getItemLayout}
-              // initialScrollIndex={2}
-              keyExtractor={(item) => item.id}
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={{ marginVertical: 20 }}
-              contentContainerStyle={{ paddingHorizontal: 20, gap: 10 }}
-              decelerationRate={"fast"}
-              snapToInterval={350}
-              snapToAlignment={"start"}
-              data={episodeWithImages}
-              renderItem={({ item, index }) => {
-                console.log(episodeWithImages.length)
-                return (
-                  <Episode
-                    index={index}
-                    episode={item}
-                    showInfo={showInfo}
-                    showLibrary={showLibrary}
-                    setShowLibrary={setShowLibrary}
-                    loading={handlingLibrary}
-                    setLoading={setHandlingLibrary}
-                  />
-                );
-              }}
+            <ScrollEpisodes
+              episodeWithImages={episodeWithImages}
+              showInfo={showInfo}
+              showLibrary={showLibrary}
+              setShowLibrary={setShowLibrary}
+              handlingLibrary={handlingLibrary}
+              setHandlingLibrary={setHandlingLibrary}
             />
             <View style={{ paddingHorizontal: 20 }}>
-              {showInfo && (
+              {showInfo?.summary && (
                 <RenderHtml
                   contentWidth={width}
                   source={{ html: showInfo?.summary }}
                   tagsStyles={{ p: { fontSize: 16 } }}
                 />
               )}
-              <Text style={{ marginBottom: 20, fontStyle: "italic" }}>
+              {genres && <Text style={{ marginBottom: 20, fontStyle: "italic" }}>
                 {genres}
-              </Text>
+              </Text>}
               <Text style={{ fontSize: 16, paddingBottom: 10 }}>
                 Where to watch: {network ? network : "unavailable"}
               </Text>
-              <View
-                style={{
-                  flexDirection: "row",
-                  gap: 10,
-                  marginBottom: 10,
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <StarRatingDisplay
-                  rating={showInfo?.rating?.average}
-                  maxStars={10}
-                  starSize={20}
-                />
-                <Text style={{ fontSize: 16 }}>
-                  {showInfo?.rating?.average}/10
-                </Text>
-              </View>
+              {showInfo?.rating?.average && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    gap: 10,
+                    marginBottom: 10,
+                    justifyContent: "center",
+                    alignItems: "center",
+                  }}
+                >
+                  <StarRatingDisplay
+                    rating={showInfo?.rating?.average}
+                    maxStars={10}
+                    starSize={20}
+                  />
+                  <Text style={{ fontSize: 16 }}>
+                    {showInfo?.rating?.average}/10
+                  </Text>
+                </View>
+              )}
             </View>
             {showCast.length > 0 && (
               <View

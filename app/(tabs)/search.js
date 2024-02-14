@@ -72,6 +72,7 @@ const search = () => {
                 value={searchShow}
                 onChangeText={(text) => setSearchShow(text)}
                 placeholder="enter tv show name"
+                onSubmitEditing={handleSearch}
                 style={{
                   padding: 10,
                   borderColor: "#E0E0E0",

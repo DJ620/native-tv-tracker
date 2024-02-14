@@ -47,12 +47,18 @@ const SearchCard = ({ tvShow, showLibrary }) => {
               height: "100%",
               width: 75,
             }}
-            source={{
-              uri: tvShow.show.image?.medium,
-            }}
+            source={
+              tvShow.show.image?.medium
+                ? {
+                    uri: tvShow.show.image?.medium,
+                  }
+                : require("../assets/images/poster-placeholder.png")
+            }
           />
           <View style={{maxWidth:230}}>
             <Text
+            adjustsFontSizeToFit
+            numberOfLines={1}
               style={{
                 fontSize: 20,
                 paddingVertical: 8,

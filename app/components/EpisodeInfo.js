@@ -226,13 +226,15 @@ const EpisodeInfo = ({
                   }
                 />
                 <View>
-                  <RenderHtml
-                    contentWidth={width}
-                    source={{ html: episode.summary }}
-                    tagsStyles={{ p: { fontSize: 16 } }}
-                    enableExperimentalBRCollapsing={true}
-                    enableExperimentalGhostLinesPrevention={true}
-                  />
+                  {episode?.summary && (
+                    <RenderHtml
+                      contentWidth={width}
+                      source={{ html: episode.summary }}
+                      tagsStyles={{ p: { fontSize: 16 } }}
+                      enableExperimentalBRCollapsing={true}
+                      enableExperimentalGhostLinesPrevention={true}
+                    />
+                  )}
                   {episode.rating?.average && (
                     <View
                       style={{
