@@ -72,7 +72,7 @@ const index = () => {
     <View style={{ backgroundColor: "white", flex: 1 }}>
       <Header />
       <Text style={{ textAlign: "center", fontSize: 18 }}>Library</Text>
-      <ScrollView style={{ marginTop: 50 }}>
+      <ScrollView style={{ marginTop: 50 }} showsVerticalScrollIndicator={false}>
         {showLibrary.length == 0 && !loading && (
           <Text style={{ textAlign: "center", fontSize: 16 }}>
             You don't currently have any shows in your library

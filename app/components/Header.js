@@ -22,7 +22,7 @@ const Header = () => {
         borderLeftColor: "white",
         borderRightColor: "white",
         borderBottomColor: "#f3f3f3",
-        borderWidth: 1,
+        borderWidth: 1
       }}
     >
       <Text style={{ fontSize: 16, fontWeight: "bold" }}>TV Tracker</Text>

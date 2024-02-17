@@ -44,7 +44,10 @@ const EpisodeInfo = ({
       backdropColor="white"
       onBackdropPress={() => setShowInfoModal(false)}
       propagateSwipe={true}
-      style={{ justifyContent: "flex-end", margin: 0, borderRadius: 5, borderTopWidth:1 }}
+      style={{ justifyContent: "flex-end", margin: 0, borderRadius: 5 }}
+      swipeDirection={'down'}
+      onSwipeComplete={() => setShowInfoModal(false)}
+      swipeThreshold={200}
     >
       <Modal
         isVisible={showModal}
@@ -171,7 +174,7 @@ const EpisodeInfo = ({
               justifyContent: "space-between",
             }}
           >
-            <Text style={{ textAlign: "center", fontSize: 20 }}>
+            <Text numberOfLines={1} adjustsFontSizeToFit style={{ textAlign: "center", fontSize: 20, maxWidth:"90%" }}>
               {episode.name}
             </Text>
             {showInLibrary && (
@@ -199,7 +202,7 @@ const EpisodeInfo = ({
             }}
           >
             <Text style={{ fontSize: 16 }}>
-              Air date: {new Date(episode.airdate).toLocaleDateString()}
+              Air date: {new Date(episode.airdate).toLocaleDateString('en-US', {timeZone: 'UTC'})}
             </Text>
             <Text style={{ fontSize: 16 }}>
               Runtime: {episode.runtime} minutes

@@ -265,7 +265,7 @@ const Episode = ({
                 : require("../assets/images/colorcard.jpeg")
             }
           />
-          <View style={{ maxWidth: 150 }}>
+          <View style={{ maxWidth: 200 }}>
             <Text style={{ fontSize: 20 }}>
               S{episode.season}|E{episode.number}
             </Text>

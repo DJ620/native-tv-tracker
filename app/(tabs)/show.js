@@ -22,6 +22,7 @@ import Cast from "../components/Cast";
 import { StarRatingDisplay } from "react-native-star-rating-widget";
 import ScrollEpisodes from "../components/ScrollEpisodes";
 import { FontAwesome, MaterialIcons, AntDesign } from "@expo/vector-icons";
+import ShowHeader from "../components/ShowHeader";
 
 const show = () => {
   const params = useLocalSearchParams();
@@ -45,8 +46,10 @@ const show = () => {
   const [poster, setPoster] = useState(null);
   const [network, setNetwork] = useState("");
   const [genres, setGenres] = useState("");
+  const [showHeaderButton, setShowHeaderButton] = useState(false);
 
   useEffect(() => {
+    setShowHeaderButton(false);
     getShowInfo(params.showId);
     getLibrary();
   }, [params]);
@@ -124,12 +127,16 @@ const show = () => {
     }
   }, [showImages]);
 
+  useEffect(() => {
+    setShowHeaderButton(true);
+  }, [inLibrary]);
+
   const getShowInfo = async (showId) => {
     setLoading(true);
     setEpisodeWithImages([]);
     setMainImage("");
     setNetwork("");
-
+    setShowInfo([]);
     try {
       const response = await tvMazeApi.getShowInfo(showId);
       setShowInfo(response.data);
@@ -202,16 +209,21 @@ const show = () => {
 
   return (
     <View style={{ backgroundColor: "white", flex: 1 }}>
-      <Header />
+      <ShowHeader
+        showName={showInfo.name}
+        handleShowLibrary={handleShowLibrary}
+        inLibrary={inLibrary}
+        showHeaderButton={showHeaderButton}
+      />
       {showInfo && !loading && (
         <View>
           <ImageBackground
             style={{
               resizeMode: "contain",
-              height: 200,
+              height: 150,
               width: "100%",
               // borderBottomWidth: 1,
-              backgroundColor:"#dfdfdf",
+              backgroundColor: "#dfdfdf",
               borderBottomColor: "#dfdfdf",
             }}
             // imageStyle={{ opacity: 0.4 }}
@@ -223,38 +235,14 @@ const show = () => {
                 : require("../assets/images/colorcard.jpeg")
             }
           >
-            <View style={{backgroundColor: "rgba(255, 255, 255, 0.75)", height: "100%"}}>
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  paddingVertical: 10,
-                  alignItems: "center",
-                  paddingHorizontal: 20,
-                }}
-              >
-                <Text
-                  adjustsFontSizeToFit={true}
-                  numberOfLines={1}
-                  style={{ fontSize: 30, maxWidth: "80%", fontWeight: "bold" }}
-                >
-                  {showInfo?.name}
-                </Text>
-                <Pressable onPress={() => handleShowLibrary()} style={{}}>
-                  {/* <Text style={{ fontSize: 16, color: "white" }}>
-                  {inLibrary ? "Remove from Library" : "Add to Library"}
-                </Text> */}
-                  {inLibrary ? (
-                    <MaterialIcons
-                      name="highlight-remove"
-                      size={36}
-                      color="red"
-                    />
-                  ) : (
-                    <AntDesign name="pluscircleo" size={30} color="black" />
-                  )}
-                </Pressable>
-              </View>
+            <View
+              style={{
+                backgroundColor: "rgba(0, 0, 0, .5)",
+                height: 150,
+                alignContent: "center",
+                paddingTop: 5,
+              }}
+            >
               <View
                 style={{
                   flexDirection: "row",
@@ -263,19 +251,37 @@ const show = () => {
                 }}
               >
                 <View style={{ paddingLeft: 10, maxWidth: "65%" }}>
-                  {genres && (
+                  {showInfo?.premiered && (
                     <Text
                       style={{
-                        marginBottom: 10,
-                        fontStyle: "italic",
-                        fontWeight: "bold",
+                        color: "white",
+                        fontSize: 16,
+                        paddingBottom: 10,
+                        fontWeight: 600,
                       }}
                     >
-                      {genres}
+                      Premiered: {new Date(showInfo.premiered).getFullYear()}
+                    </Text>
+                  )}
+                  {showInfo?.status && (
+                    <Text
+                      style={{
+                        color: "white",
+                        fontSize: 16,
+                        paddingBottom: 10,
+                        fontWeight: 600,
+                      }}
+                    >
+                      Status: {showInfo.status}
                     </Text>
                   )}
                   <Text
-                    style={{ fontSize: 16, paddingBottom: 10, fontWeight: 600 }}
+                    style={{
+                      color: "white",
+                      fontSize: 16,
+                      paddingBottom: 10,
+                      fontWeight: 600,
+                    }}
                   >
                     Where to watch: {network ? network : "unavailable"}
                   </Text>
@@ -284,21 +290,35 @@ const show = () => {
                       style={{
                         flexDirection: "row",
                         gap: 10,
-                        // marginBottom: 10,
-                        // justifyContent: "center",
-                        alignItems: "center",
+                        marginBottom: 10,
+                        alignItems: "center"
                       }}
                     >
-                      {/* <StarRatingDisplay
-                    rating={showInfo?.rating?.average}
-                    maxStars={10}
-                    starSize={20}
-                  /> */}
                       <FontAwesome name="star" size={20} color="yellow" />
-                      <Text style={{ fontSize: 16, fontWeight: 600 }}>
+                      <Text
+                        style={{
+                          color: "white",
+                          fontSize: 16,
+                          fontWeight: 600,
+                        }}
+                      >
                         {showInfo?.rating?.average}/10
                       </Text>
                     </View>
+                  )}
+                   {genres && (
+                    <Text
+                    numberOfLines={1}
+                    adjustsFontSizeToFit
+                      style={{
+                        color: "white",
+                        marginBottom: 10,
+                        fontStyle: "italic",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {genres}
+                    </Text>
                   )}
                 </View>
                 <Image
@@ -319,6 +339,7 @@ const show = () => {
             </View>
           </ImageBackground>
           <ScrollView
+          style={{marginTop:2}}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ flexGrow: 1, paddingBottom: 230 }}
           >
