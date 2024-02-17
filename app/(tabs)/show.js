@@ -6,6 +6,7 @@ import {
   Alert,
   Pressable,
   Image,
+  ImageBackground,
   useWindowDimensions,
   ScrollView,
 } from "react-native";
@@ -20,6 +21,7 @@ import Season from "../components/Season";
 import Cast from "../components/Cast";
 import { StarRatingDisplay } from "react-native-star-rating-widget";
 import ScrollEpisodes from "../components/ScrollEpisodes";
+import { FontAwesome, MaterialIcons, AntDesign } from "@expo/vector-icons";
 
 const show = () => {
   const params = useLocalSearchParams();
@@ -40,6 +42,7 @@ const show = () => {
   const [episodeWithImages, setEpisodeWithImages] = useState([]);
   const [fullEpisodeData, setFullEpisodeData] = useState([]);
   const [mainImage, setMainImage] = useState(null);
+  const [poster, setPoster] = useState(null);
   const [network, setNetwork] = useState("");
   const [genres, setGenres] = useState("");
 
@@ -94,18 +97,22 @@ const show = () => {
 
   useEffect(() => {
     if (showImages.length > 0) {
+      let posterImage = showImages.find((img) => {
+        return img.type === "poster";
+      });
+      setPoster(posterImage.resolutions.original.url);
       let image = null;
       image = showImages.find((img) => {
-        return img.type === "banner";
+        return img.type === "background";
       });
       if (!image) {
         image = showImages.find((img) => {
-          return img.type === "typography";
+          return img.type === "banner";
         });
       }
       if (!image) {
         image = showImages.find((img) => {
-          return img.type === "background";
+          return img.type === "typography";
         });
       }
       if (!image) {
@@ -198,40 +205,124 @@ const show = () => {
       <Header />
       {showInfo && !loading && (
         <View>
-          <View
+          <ImageBackground
             style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              paddingBottom: 10,
-              alignItems: "center",
-              paddingHorizontal: 20,
+              resizeMode: "contain",
+              height: 200,
+              width: "100%",
+              // borderBottomWidth: 1,
+              backgroundColor:"#dfdfdf",
+              borderBottomColor: "#dfdfdf",
             }}
+            // imageStyle={{ opacity: 0.4 }}
+            source={
+              mainImage
+                ? {
+                    uri: mainImage,
+                  }
+                : require("../assets/images/colorcard.jpeg")
+            }
           >
-            <Text
-              adjustsFontSizeToFit={true}
-              numberOfLines={2}
-              style={{ fontSize: 30, maxWidth: "65%" }}
-            >
-              {showInfo?.name}
-            </Text>
-            <Pressable
-              onPress={() => handleShowLibrary()}
-              style={{
-                padding: 10,
-                backgroundColor: inLibrary ? "green" : "red",
-                borderRadius: 5,
-              }}
-            >
-              <Text style={{ fontSize: 16, color: "white" }}>
-                {inLibrary ? "Remove from Library" : "Add to Library"}
-              </Text>
-            </Pressable>
-          </View>
+            <View style={{backgroundColor: "rgba(255, 255, 255, 0.75)", height: "100%"}}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  paddingVertical: 10,
+                  alignItems: "center",
+                  paddingHorizontal: 20,
+                }}
+              >
+                <Text
+                  adjustsFontSizeToFit={true}
+                  numberOfLines={1}
+                  style={{ fontSize: 30, maxWidth: "80%", fontWeight: "bold" }}
+                >
+                  {showInfo?.name}
+                </Text>
+                <Pressable onPress={() => handleShowLibrary()} style={{}}>
+                  {/* <Text style={{ fontSize: 16, color: "white" }}>
+                  {inLibrary ? "Remove from Library" : "Add to Library"}
+                </Text> */}
+                  {inLibrary ? (
+                    <MaterialIcons
+                      name="highlight-remove"
+                      size={36}
+                      color="red"
+                    />
+                  ) : (
+                    <AntDesign name="pluscircleo" size={30} color="black" />
+                  )}
+                </Pressable>
+              </View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <View style={{ paddingLeft: 10, maxWidth: "65%" }}>
+                  {genres && (
+                    <Text
+                      style={{
+                        marginBottom: 10,
+                        fontStyle: "italic",
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {genres}
+                    </Text>
+                  )}
+                  <Text
+                    style={{ fontSize: 16, paddingBottom: 10, fontWeight: 600 }}
+                  >
+                    Where to watch: {network ? network : "unavailable"}
+                  </Text>
+                  {showInfo?.rating?.average && (
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        gap: 10,
+                        // marginBottom: 10,
+                        // justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      {/* <StarRatingDisplay
+                    rating={showInfo?.rating?.average}
+                    maxStars={10}
+                    starSize={20}
+                  /> */}
+                      <FontAwesome name="star" size={20} color="yellow" />
+                      <Text style={{ fontSize: 16, fontWeight: 600 }}>
+                        {showInfo?.rating?.average}/10
+                      </Text>
+                    </View>
+                  )}
+                </View>
+                <Image
+                  resizeMode="contain"
+                  style={{
+                    height: 135,
+                    width: 100,
+                    marginRight: 20,
+                    borderRadius: 5,
+                  }}
+                  source={
+                    showInfo?.image?.original
+                      ? { uri: showInfo?.image?.original }
+                      : require("../assets/images/poster-placeholder.png")
+                  }
+                />
+              </View>
+            </View>
+          </ImageBackground>
           <ScrollView
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ flexGrow: 1, paddingBottom: 150 }}
+            contentContainerStyle={{ flexGrow: 1, paddingBottom: 230 }}
           >
-            <Suspense fallback={<Text>Loading image...</Text>}>
+            {/* <Suspense fallback={<Text>Loading image...</Text>}>
               <Image
                 style={{
                   resizeMode: "contain",
@@ -247,43 +338,7 @@ const show = () => {
                     : require("../assets/images/colorcard.jpeg")
                 }
               />
-            </Suspense>
-            {/* <ScrollView
-              horizontal={true}
-              showsHorizontalScrollIndicator={false}
-              style={{ marginVertical: 20 }}
-              contentContainerStyle={{ paddingHorizontal: 10 }}
-              decelerationRate={"fast"}
-              snapToInterval={310}
-              snapToAlignment={"center"}
-              ref={(ref) => {
-                setScroller(ref);
-              }}
-            >
-              <View style={{ flexDirection: "row", gap: 10 }}>
-                {episodeWithImages?.map((episode, index) => {
-                  return (
-                    <View
-                      onLayout={(event) => {
-                        const layout = event.nativeEvent.layout;
-                        // coordinate[item.key] = layout.x;
-                        console.log(layout.x);
-                      }}
-                    >
-                      <Episode
-                        key={index}
-                        episode={episode}
-                        showInfo={showInfo}
-                        showLibrary={showLibrary}
-                        setShowLibrary={setShowLibrary}
-                        loading={handlingLibrary}
-                        setLoading={setHandlingLibrary}
-                      />
-                    </View>
-                  );
-                })}
-              </View>
-            </ScrollView> */}
+            </Suspense> */}
             <ScrollEpisodes
               episodeWithImages={episodeWithImages}
               showInfo={showInfo}
@@ -300,7 +355,7 @@ const show = () => {
                   tagsStyles={{ p: { fontSize: 16 } }}
                 />
               )}
-              {genres && <Text style={{ marginBottom: 20, fontStyle: "italic" }}>
+              {/* {genres && <Text style={{ marginBottom: 20, fontStyle: "italic" }}>
                 {genres}
               </Text>}
               <Text style={{ fontSize: 16, paddingBottom: 10 }}>
@@ -325,7 +380,7 @@ const show = () => {
                     {showInfo?.rating?.average}/10
                   </Text>
                 </View>
-              )}
+              )} */}
             </View>
             {showCast.length > 0 && (
               <View
@@ -364,7 +419,7 @@ const show = () => {
               position: "absolute",
               height: "100%",
               width: "100%",
-              marginTop: 50,
+              marginTop: 30,
               backgroundColor: "white",
               opacity: 0.5,
             }}

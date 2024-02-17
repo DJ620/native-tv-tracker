@@ -44,7 +44,7 @@ const EpisodeInfo = ({
       backdropColor="white"
       onBackdropPress={() => setShowInfoModal(false)}
       propagateSwipe={true}
-      style={{ justifyContent: "flex-end", margin: 0, borderRadius: 5 }}
+      style={{ justifyContent: "flex-end", margin: 0, borderRadius: 5, borderTopWidth:1 }}
     >
       <Modal
         isVisible={showModal}

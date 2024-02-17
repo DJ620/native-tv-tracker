@@ -16,13 +16,13 @@ const Header = () => {
       style={{
         flexDirection: "row",
         justifyContent: "space-between",
-        padding: 20,
+        paddingHorizontal: 20,
+        paddingBottom:10,
         borderTopColor: "white",
         borderLeftColor: "white",
         borderRightColor: "white",
         borderBottomColor: "#f3f3f3",
         borderWidth: 1,
-        marginBottom: 10,
       }}
     >
       <Text style={{ fontSize: 16, fontWeight: "bold" }}>TV Tracker</Text>

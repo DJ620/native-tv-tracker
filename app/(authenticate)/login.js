@@ -16,7 +16,6 @@ import { Feather, AntDesign, Entypo } from "@expo/vector-icons";
 import api from "../utils/api";
 import { useRouter } from "expo-router";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import token from "../utils/token";
 
 const login = () => {
   const router = useRouter();
@@ -52,21 +51,6 @@ const login = () => {
       );
     }
   };
-
-  const handleVerify = async () => {
-    const userToken = await token.getToken();
-    await api.verify(userToken).then(res => {
-        if (res.data.success) {
-            router.push("/(tabs)/library");
-        } else {
-            AsyncStorage.removeItem("token");
-        }
-    })
-  }
-
-  useEffect(() => {
-    handleVerify();
-  }, []);
 
   useEffect(() => {
     if (username === "" || password === "") {

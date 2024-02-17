@@ -59,7 +59,6 @@ const LibrarySection = ({ episodes, title }) => {
                     uri: show.image,
                   }} />
               </Pressable>
-              <Text style={{ textAlign: "center" }}>{show.name}</Text>
             </View>
           ))}
         </View>
