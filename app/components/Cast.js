@@ -5,13 +5,23 @@ import {
   ScrollView,
   Image,
   TouchableOpacity,
+  Pressable,
 } from "react-native";
-import { Suspense } from "react";
+import { useRouter } from "expo-router";
 
-const Cast = ({ showCast }) => {
+const Cast = ({ showCast, setShowInfoModal }) => {
+  const router = useRouter();
+
+//   showCast?.sort((a, b) => {
+//     return a.person.name.localeCompare(b.person.name);
+//   });
+
   return (
     <ScrollView horizontal={true} showsHorizontalScrollIndicator={false}>
-      <TouchableOpacity activeOpacity={0.99} style={{ flexDirection: "row", gap:1 }}>
+      <TouchableOpacity
+        activeOpacity={0.99}
+        style={{ flexDirection: "row", gap: 1 }}
+      >
         {showCast?.map((cast, index) => {
           return (
             <View
@@ -22,10 +32,27 @@ const Cast = ({ showCast }) => {
                 alignItems: "center",
               }}
             >
-              <Suspense fallback={<Text>Loading...</Text>}>
+              <Pressable
+                onPress={() => {
+                  setShowInfoModal && setShowInfoModal(false);
+                  router.push({
+                    pathname: "/(tabs)/actor",
+                    params: {
+                      actorId: cast?.person?.id,
+                      actorName: cast?.person?.name,
+                      actorBirthday: cast?.person?.birthday,
+                      actorCountry: cast?.person?.country?.name,
+                      actorPicture:
+                        cast.person?.image?.medium ||
+                        cast.character?.image?.medium ||
+                        "https://i0.wp.com/www.ms915brooklyn.org/wp-content/uploads/2021/08/placeholder-240x300-1.jpg?resize=240%2C300&ssl=1",
+                    },
+                  });
+                }}
+              >
                 <Image
                   style={{
-                    resizeMode: "contain",
+                    resizeMode: "cover",
                     height: 140,
                     width: 100,
                     marginTop: 10,
@@ -37,9 +64,11 @@ const Cast = ({ showCast }) => {
                       "https://i0.wp.com/www.ms915brooklyn.org/wp-content/uploads/2021/08/placeholder-240x300-1.jpg?resize=240%2C300&ssl=1",
                   }}
                 />
-              </Suspense>
+              </Pressable>
               <Text numberOfLines={1}>{cast.person.name}</Text>
-              <Text numberOfLines={1} style={{ fontStyle: "italic" }}>{cast.character.name}</Text>
+              <Text numberOfLines={1} style={{ fontStyle: "italic" }}>
+                {cast.character.name}
+              </Text>
             </View>
           );
         })}

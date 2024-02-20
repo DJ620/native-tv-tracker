@@ -33,7 +33,7 @@ const ShowHeader = ({
       >
         {showName}
       </Text>
-      {showHeaderButton && showName && (
+      {showName && (
         <Pressable onPress={() => handleShowLibrary()} style={{}}>
           {inLibrary ? (
             <MaterialIcons name="highlight-remove" size={36} color="red" />

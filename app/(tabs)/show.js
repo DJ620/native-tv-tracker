@@ -4,14 +4,12 @@ import {
   View,
   ActivityIndicator,
   Alert,
-  Pressable,
   Image,
   ImageBackground,
   useWindowDimensions,
   ScrollView,
 } from "react-native";
-import { useEffect, useState, Suspense } from "react";
-import Header from "../components/Header";
+import { useEffect, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import tvMazeApi from "../utils/tvMazeApi";
 import api from "../utils/api";
@@ -19,10 +17,10 @@ import token from "../utils/token";
 import RenderHtml from "react-native-render-html";
 import Season from "../components/Season";
 import Cast from "../components/Cast";
-import { StarRatingDisplay } from "react-native-star-rating-widget";
 import ScrollEpisodes from "../components/ScrollEpisodes";
-import { FontAwesome, MaterialIcons, AntDesign } from "@expo/vector-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import ShowHeader from "../components/ShowHeader";
+import Loading from "../components/Loading";
 
 const show = () => {
   const params = useLocalSearchParams();
@@ -222,11 +220,9 @@ const show = () => {
               resizeMode: "contain",
               height: 150,
               width: "100%",
-              // borderBottomWidth: 1,
               backgroundColor: "#dfdfdf",
               borderBottomColor: "#dfdfdf",
             }}
-            // imageStyle={{ opacity: 0.4 }}
             source={
               mainImage
                 ? {
@@ -250,7 +246,7 @@ const show = () => {
                   alignItems: "center",
                 }}
               >
-                <View style={{ paddingLeft: 10, maxWidth: "65%" }}>
+                <View style={{ paddingLeft: 10, maxWidth: "70%" }}>
                   {showInfo?.premiered && (
                     <Text
                       style={{
@@ -260,7 +256,12 @@ const show = () => {
                         fontWeight: 600,
                       }}
                     >
-                      Premiered: {new Date(showInfo.premiered).getFullYear()}
+                      {new Date(showInfo.premiered).getFullYear()}{" "}
+                      {showInfo.ended && showInfo.ended !== showInfo.premiered
+                        ? "- " + new Date(showInfo.ended).getFullYear()
+                        : !showInfo.ended
+                        ? "-"
+                        : null}
                     </Text>
                   )}
                   {showInfo?.status && (
@@ -275,23 +276,38 @@ const show = () => {
                       Status: {showInfo.status}
                     </Text>
                   )}
-                  <Text
-                    style={{
-                      color: "white",
-                      fontSize: 16,
-                      paddingBottom: 10,
-                      fontWeight: 600,
-                    }}
+                  <View
+                    style={{ flexDirection: "row", paddingBottom: 10, gap: 2 }}
                   >
-                    Where to watch: {network ? network : "unavailable"}
-                  </Text>
+                    <Text
+                      style={{
+                        width: 130,
+                        color: "white",
+                        fontSize: 16,
+                        fontWeight: 600,
+                      }}
+                    >
+                      Where to watch:
+                    </Text>
+                    <Text
+                      numberOfLines={1}
+                      adjustsFontSizeToFit
+                      style={{
+                        color: "white",
+                        fontSize: 16,
+                        fontWeight: 600,
+                      }}
+                    >
+                      {network ? network : "unavailable"}
+                    </Text>
+                  </View>
                   {showInfo?.rating?.average && (
                     <View
                       style={{
                         flexDirection: "row",
                         gap: 10,
                         marginBottom: 10,
-                        alignItems: "center"
+                        alignItems: "center",
                       }}
                     >
                       <FontAwesome name="star" size={20} color="yellow" />
@@ -306,10 +322,10 @@ const show = () => {
                       </Text>
                     </View>
                   )}
-                   {genres && (
+                  {genres && (
                     <Text
-                    numberOfLines={1}
-                    adjustsFontSizeToFit
+                      numberOfLines={1}
+                      adjustsFontSizeToFit
                       style={{
                         color: "white",
                         marginBottom: 10,
@@ -339,27 +355,10 @@ const show = () => {
             </View>
           </ImageBackground>
           <ScrollView
-          style={{marginTop:2}}
+            style={{ marginTop: 2 }}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ flexGrow: 1, paddingBottom: 230 }}
           >
-            {/* <Suspense fallback={<Text>Loading image...</Text>}>
-              <Image
-                style={{
-                  resizeMode: "contain",
-                  height: 200,
-                  width: "100%",
-                  marginTop: 10,
-                }}
-                source={
-                  mainImage
-                    ? {
-                        uri: mainImage,
-                      }
-                    : require("../assets/images/colorcard.jpeg")
-                }
-              />
-            </Suspense> */}
             <ScrollEpisodes
               episodeWithImages={episodeWithImages}
               showInfo={showInfo}
@@ -376,32 +375,6 @@ const show = () => {
                   tagsStyles={{ p: { fontSize: 16 } }}
                 />
               )}
-              {/* {genres && <Text style={{ marginBottom: 20, fontStyle: "italic" }}>
-                {genres}
-              </Text>}
-              <Text style={{ fontSize: 16, paddingBottom: 10 }}>
-                Where to watch: {network ? network : "unavailable"}
-              </Text>
-              {showInfo?.rating?.average && (
-                <View
-                  style={{
-                    flexDirection: "row",
-                    gap: 10,
-                    marginBottom: 10,
-                    justifyContent: "center",
-                    alignItems: "center",
-                  }}
-                >
-                  <StarRatingDisplay
-                    rating={showInfo?.rating?.average}
-                    maxStars={10}
-                    starSize={20}
-                  />
-                  <Text style={{ fontSize: 16 }}>
-                    {showInfo?.rating?.average}/10
-                  </Text>
-                </View>
-              )} */}
             </View>
             {showCast.length > 0 && (
               <View
@@ -435,30 +408,7 @@ const show = () => {
       )}
       {loading ||
         (handlingLibrary && (
-          <View
-            style={{
-              position: "absolute",
-              height: "100%",
-              width: "100%",
-              marginTop: 30,
-              backgroundColor: "white",
-              opacity: 0.5,
-            }}
-          >
-            <ActivityIndicator
-              size={"large"}
-              color={"black"}
-              style={{
-                position: "absolute",
-                left: 0,
-                right: 0,
-                top: 0,
-                bottom: 0,
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            />
-          </View>
+          <Loading />
         ))}
     </View>
   );

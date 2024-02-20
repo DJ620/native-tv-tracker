@@ -55,23 +55,32 @@ const SearchCard = ({ tvShow, showLibrary }) => {
                 : require("../assets/images/poster-placeholder.png")
             }
           />
-          <View style={{maxWidth:230}}>
+          <View style={{ maxWidth: 230 }}>
             <Text
-            adjustsFontSizeToFit
-            numberOfLines={1}
+              adjustsFontSizeToFit
+              numberOfLines={1}
               style={{
                 fontSize: 20,
-                paddingVertical: 8,
+                paddingTop: 5,
+                paddingBottom: 5,
               }}
             >
               {tvShow.show.name}
             </Text>
-            <Text style={{fontSize:16}}>{network}</Text>
-            <Text style={{fontStyle: "italic"}}>{genres}</Text>
+            <Text style={{ paddingBottom: 8 }}>
+              {tvShow.show.premiered && new Date(tvShow.show.premiered).getFullYear()}{" "}
+              {tvShow.show.ended && tvShow.show.ended !== tvShow.show.premiered
+                ? "- " + new Date(tvShow.show.ended).getFullYear()
+                : !tvShow.show.ended
+                ? "-"
+                : null}
+            </Text>
+            <Text style={{ fontSize: 16 }}>{network}</Text>
+            <Text style={{ fontStyle: "italic" }}>{genres}</Text>
           </View>
         </View>
         {isInLibrary && (
-          <View style={{alignSelf:"center", paddingRight:20}}>
+          <View style={{ alignSelf: "center", paddingRight: 20 }}>
             <FontAwesome5 name="check" size={24} color="green" />
           </View>
         )}

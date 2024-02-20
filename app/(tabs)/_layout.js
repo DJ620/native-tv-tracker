@@ -1,8 +1,6 @@
 import { Tabs } from "expo-router";
 import { useRouter, usePathname } from "expo-router";
 import { Feather, Fontisto } from '@expo/vector-icons';
-import { Text } from "react-native";
-import { useEffect } from "react";
 import { ModalPortal } from "react-native-modals";
 
 import store from "../redux/store";
@@ -42,6 +40,16 @@ export default function _layout() {
       />
        <Tabs.Screen
         name="show"
+        options={{
+            href: null,
+            headerShown: false,
+            tabBarLabelStyle: {fontSize:12, color: pathname === "/library" ? "#006FF9" : "gray", marginBottom:-15},
+            tabBarIconStyle: {marginBottom:-15},
+            tabBarStyle: {paddingBottom:10, backgroundColor:"white", height: 50}
+        }}
+      />
+      <Tabs.Screen
+        name="actor"
         options={{
             href: null,
             headerShown: false,

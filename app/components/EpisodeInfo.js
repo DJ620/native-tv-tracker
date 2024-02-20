@@ -202,7 +202,7 @@ const EpisodeInfo = ({
             }}
           >
             <Text style={{ fontSize: 16 }}>
-              Air date: {new Date(episode.airdate).toLocaleDateString('en-US', {timeZone: 'UTC'})}
+              Air date: {episode.airdate ? new Date(episode.airdate).toLocaleDateString('en-US', {timeZone: 'UTC'}) : "unavailable"}
             </Text>
             <Text style={{ fontSize: 16 }}>
               Runtime: {episode.runtime} minutes
@@ -264,7 +264,7 @@ const EpisodeInfo = ({
                       >
                         Guest Cast
                       </Text>
-                      <Cast showCast={guestCast} />
+                      <Cast showCast={guestCast} setShowInfoModal={setShowInfoModal} />
                     </View>
                   )}
                 </View>

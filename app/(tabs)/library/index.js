@@ -13,6 +13,7 @@ import LibrarySection from "../../components/LibrarySection";
 import { usePathname } from "expo-router";
 import { useDispatch } from "react-redux";
 import { addUserId } from "../../redux/slices/userId";
+import { addLibrary } from "../../redux/slices/showLibrary";
 
 const index = () => {
   const dispatch = useDispatch();
@@ -37,6 +38,7 @@ const index = () => {
   }, [pathname]);
 
   useEffect(() => {
+    dispatch(addLibrary(showLibrary));
     setUpToDate(
       showLibrary.filter(
         (show) =>
