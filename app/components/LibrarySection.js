@@ -3,21 +3,24 @@ import {
   Text,
   View,
   Pressable,
-  Image,
   useWindowDimensions,
 } from "react-native";
 import { useState } from "react";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import ImageLoader from "./ImageLoader";
 import LibraryCard from "./LibraryCard";
 
 const LibrarySection = ({ episodes, title }) => {
   const { width } = useWindowDimensions();
-  const router = useRouter();
   const [show, setShow] = useState(true);
   return (
-    <View style={{ paddingBottom: 20, borderBottomColor: "#dfdfdf", borderBottomWidth:1, marginBottom: 20 }}>
+    <View
+      style={{
+        paddingBottom: 20,
+        borderBottomColor: "#dfdfdf",
+        borderBottomWidth: 1,
+        marginBottom: 20,
+      }}
+    >
       {episodes.length > 0 && (
         <View
           style={{
@@ -61,7 +64,12 @@ const LibrarySection = ({ episodes, title }) => {
           }}
         >
           {episodes.map((show) => (
-            <LibraryCard show={show} width={width} key={show.showId} title={title} />
+            <LibraryCard
+              show={show}
+              width={width}
+              key={show.showId}
+              title={title}
+            />
           ))}
         </View>
       )}

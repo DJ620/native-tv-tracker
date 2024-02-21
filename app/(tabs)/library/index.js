@@ -83,14 +83,18 @@ const index = () => {
           </Text>
         )}
 
-        <LibrarySection episodes={hasNewEpisodes} title="Watch Next" />
+        {showLibrary.length > 0 && (
+          <View>
+            <LibrarySection episodes={hasNewEpisodes} title="Watch Next" />
 
-        <LibrarySection
-          episodes={notStarted}
-          title="Haven't Started Watching"
-        />
+            <LibrarySection
+              episodes={notStarted}
+              title="Haven't Started Watching"
+            />
 
-        <LibrarySection episodes={upToDate} title="Up To Date" />
+            <LibrarySection episodes={upToDate} title="Up To Date" />
+          </View>
+        )}
       </ScrollView>
       {loading && (
         <View
