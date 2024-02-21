@@ -1,4 +1,4 @@
-import { Image, Pressable, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { useState, useEffect } from "react";
 import { AntDesign } from "@expo/vector-icons";
 import Modal from "react-native-modal";
@@ -6,6 +6,7 @@ import api from "../utils/api";
 import token from "../utils/token";
 import EpisodeInfo from "./EpisodeInfo";
 import tvMazeApi from "../utils/tvMazeApi";
+import ImageLoader from "./ImageLoader";
 
 const Episode = ({
   episode,
@@ -251,7 +252,7 @@ const Episode = ({
         }}
       >
         <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-          <Image
+          <ImageLoader
             style={{
               // resizeMode: "contain",
               height: 75,

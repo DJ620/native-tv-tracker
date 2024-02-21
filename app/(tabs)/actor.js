@@ -12,6 +12,7 @@ import tvMazeApi from "../utils/tvMazeApi";
 import ActorHeader from "../components/ActorHeader";
 import ActorCredit from "../components/ActorCredit";
 import Loading from "../components/Loading";
+import ImageLoader from "../components/ImageLoader";
 
 const actor = () => {
   const router = useRouter();
@@ -144,15 +145,15 @@ const actor = () => {
                 Born in: {actorCountry || "unavailable"}
               </Text>
             </View>
-            <Image
-              source={{ uri: actorPicture }}
-              style={{
-                resizeMode: "contain",
-                height: 200,
-                width: 150,
-                marginTop: 10,
-              }}
-            />
+            <View style={{marginTop:10}}>
+              <ImageLoader
+                source={{ uri: actorPicture }}
+                style={{
+                  height: 200,
+                  width: 150,
+                }}
+              />
+            </View>
           </View>
           <FlatList
             style={{ marginTop: 5 }}

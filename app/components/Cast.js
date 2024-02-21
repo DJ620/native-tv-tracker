@@ -8,6 +8,7 @@ import {
   Pressable,
 } from "react-native";
 import { useRouter } from "expo-router";
+import ImageLoader from "./ImageLoader";
 
 const Cast = ({ showCast, setShowInfoModal }) => {
   const router = useRouter();
@@ -33,6 +34,7 @@ const Cast = ({ showCast, setShowInfoModal }) => {
               }}
             >
               <Pressable
+              style={{marginTop:10}}
                 onPress={() => {
                   setShowInfoModal && setShowInfoModal(false);
                   router.push({
@@ -50,12 +52,11 @@ const Cast = ({ showCast, setShowInfoModal }) => {
                   });
                 }}
               >
-                <Image
+                <ImageLoader
                   style={{
                     resizeMode: "cover",
                     height: 140,
                     width: 100,
-                    marginTop: 10,
                   }}
                   source={{
                     uri:

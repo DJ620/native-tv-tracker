@@ -21,6 +21,7 @@ import ScrollEpisodes from "../components/ScrollEpisodes";
 import { FontAwesome } from "@expo/vector-icons";
 import ShowHeader from "../components/ShowHeader";
 import Loading from "../components/Loading";
+import ImageLoader from "../components/ImageLoader";
 
 const show = () => {
   const params = useLocalSearchParams();
@@ -337,8 +338,8 @@ const show = () => {
                     </Text>
                   )}
                 </View>
-                <Image
-                  resizeMode="contain"
+                <ImageLoader
+                  resizeMode="cover"
                   style={{
                     height: 135,
                     width: 100,

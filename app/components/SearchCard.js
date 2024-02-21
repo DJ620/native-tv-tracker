@@ -2,6 +2,7 @@ import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
 import { FontAwesome5 } from "@expo/vector-icons";
+import ImageLoader from "./ImageLoader";
 
 const SearchCard = ({ tvShow, showLibrary }) => {
   const router = useRouter();
@@ -41,7 +42,7 @@ const SearchCard = ({ tvShow, showLibrary }) => {
         }
       >
         <View style={{ flexDirection: "row", gap: 30 }}>
-          <Image
+          <ImageLoader
             style={{
               resizeMode: "contain",
               height: "100%",

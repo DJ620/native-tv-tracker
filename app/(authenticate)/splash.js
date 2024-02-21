@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, StatusBar } from "react-native";
+import { StyleSheet, Text, View, StatusBar, ActivityIndicator } from "react-native";
 import { useEffect } from "react";
 import api from "../utils/api";
 import { useRouter } from "expo-router";
@@ -31,7 +31,8 @@ const splash = () => {
       style={{ flex: 1, backgroundColor: "white", justifyContent: "center" }}
     >
       <StatusBar />
-      <Text style={{ textAlign: "center", fontSize: 50 }}>TV Tracker</Text>
+      <Text style={{ textAlign: "center", fontSize: 50, marginBottom:100 }}>TV Tracker</Text>
+      <ActivityIndicator size={"large"}/>
     </View>
   );
 };

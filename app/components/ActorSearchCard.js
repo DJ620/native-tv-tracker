@@ -1,6 +1,7 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
+import ImageLoader from "./ImageLoader";
 
 const ActorSearchCard = ({ actor }) => {
   const router = useRouter();
@@ -29,7 +30,7 @@ const ActorSearchCard = ({ actor }) => {
         }}
       >
         <View style={{ flexDirection: "row", gap: 30, alignItems:"center" }}>
-          <Image
+          <ImageLoader
             style={{
               resizeMode: "cover",
               height: "100%",

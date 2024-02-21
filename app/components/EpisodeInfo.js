@@ -14,6 +14,7 @@ import RenderHtml from "react-native-render-html";
 import { StarRatingDisplay } from "react-native-star-rating-widget";
 import { AntDesign, FontAwesome5 } from "@expo/vector-icons";
 import Cast from "./Cast";
+import ImageLoader from "./ImageLoader";
 
 const EpisodeInfo = ({
   showInfoModal,
@@ -216,7 +217,7 @@ const EpisodeInfo = ({
           >
             <TouchableOpacity propagateSwipe={true} activeOpacity={0.99}>
               <View style={{ alignItems: "center", flexGrow: 1 }}>
-                <Image
+                <ImageLoader
                   style={{
                     resizeMode: "cover",
                     height: 200,

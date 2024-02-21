@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
 import { useSelector } from "react-redux";
 import { FontAwesome5 } from "@expo/vector-icons";
+import ImageLoader from "./ImageLoader";
 
 const ActorCredit = ({ item, index }) => {
   const router = useRouter();
@@ -38,7 +39,7 @@ const ActorCredit = ({ item, index }) => {
         marginVertical: 5,
       }}
     >
-      <Image
+      <ImageLoader
         source={
           item?.image?.medium
             ? { uri: item?.image?.medium }
@@ -55,6 +56,7 @@ const ActorCredit = ({ item, index }) => {
           <Text
             numberOfLines={1}
             adjustsFontSizeToFit
+            minimumFontScale={.75}
             style={{ fontSize: 20, paddingBottom: 5, maxWidth: 200 }}
           >
             {item?.name}

@@ -36,6 +36,7 @@ const search = () => {
 
   useEffect(() => {
     if (pathname === "/search") {
+      setSearchType("show");
       setShows([]);
       setActors([]);
       setSearchShow("");
