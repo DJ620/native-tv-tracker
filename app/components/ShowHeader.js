@@ -8,9 +8,7 @@ const ShowHeader = ({
   inLibrary,
   showHeaderButton,
 }) => {
-  useEffect(() => {
-    console.log(showHeaderButton);
-  }, [showHeaderButton]);
+
   return (
     <View
       style={{

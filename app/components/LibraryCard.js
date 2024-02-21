@@ -31,7 +31,7 @@ const LibraryCard = ({ show, width, title }) => {
           style={{
             resizeMode: "cover",
             height: 175,
-            width: width * 0.29,
+            width: width * 0.29
           }}
           source={{
             uri: show.image,

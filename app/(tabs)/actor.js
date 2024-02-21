@@ -121,7 +121,7 @@ const actor = () => {
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <ActorHeader actorName={actorName} />
       {credits.length > 0 && (
-        <View style={{ paddingHorizontal: 20 }}>
+        <View style={{ paddingHorizontal: 15 }}>
           <View
             style={{
               flexDirection: "row",

@@ -1,4 +1,10 @@
-import { StyleSheet, Text, View, Pressable, Image } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Pressable,
+  useWindowDimensions,
+} from "react-native";
 import { useState, useEffect } from "react";
 import { useRouter } from "expo-router";
 import { useSelector } from "react-redux";
@@ -6,6 +12,7 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import ImageLoader from "./ImageLoader";
 
 const ActorCredit = ({ item, index }) => {
+  const { width } = useWindowDimensions();
   const router = useRouter();
   const showLibrary = useSelector((state) => state.showLibrary);
   const premiere = item.premiered && new Date(item?.premiered).getFullYear();
@@ -32,7 +39,7 @@ const ActorCredit = ({ item, index }) => {
       }}
       style={{
         flexDirection: "row",
-        gap: 30,
+        gap: width * .03,
         alignItems: "center",
         alignContent: "center",
         backgroundColor: "#dfdfdf",
@@ -52,16 +59,34 @@ const ActorCredit = ({ item, index }) => {
         }}
       />
       <View>
-        <View style={{flexDirection:"row", justifyContent: "space-between", width: 250}}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            // backgroundColor:"red"
+            // width: width * .6,
+          }}
+        >
           <Text
             numberOfLines={1}
             adjustsFontSizeToFit
-            minimumFontScale={.75}
-            style={{ fontSize: 20, paddingBottom: 5, maxWidth: 200 }}
+            minimumFontScale={0.75}
+            style={{
+              fontSize: 20,
+              paddingBottom: 5,
+              width: isInLibrary ? width * .56 : width * .6
+            }}
           >
             {item?.name}
           </Text>
-          {isInLibrary && <FontAwesome5 name="check" size={24} color="green" />}
+          {isInLibrary && (
+            <FontAwesome5
+              name="check"
+              size={24}
+              color="green"
+              style={{ width: width * .2, marginLeft: 10, paddingLeft: 10 }}
+            />
+          )}
         </View>
         <Text style={{ paddingBottom: 5 }}>
           {premiere} {end && end !== premiere ? "- " + end : !end ? "-" : null}
